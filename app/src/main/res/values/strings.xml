@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">State Machine Sample</string>
-    <string name="fetch_data_button_text">No Params</string>
-    <string name="re_fetch_data_button_text">With Params</string>
+    <string name="get_user_profile_button_text">With Params</string>
+    <string name="github_login_edit_text_hint">Github login</string>
 </resources>

@@ -11,4 +11,7 @@ object Versions {
     const val coreKtx: String = "1.3.2"
     const val stateMachine: String = "0.2.0"
     const val lifecycle: String = "2.2.0"
+    const val retrofit: String = "2.9.0"
+    const val koin: String = "2.1.6"
+    const val loggingInterceptor: String = "4.9.0"
 }
