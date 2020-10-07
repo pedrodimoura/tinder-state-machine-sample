@@ -8,13 +8,13 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/fetchDataButton"
+        android:id="@+id/noParametrizedGet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/fetch_data_button_text" />
 
     <Button
-        android:id="@+id/reloadDataButton"
+        android:id="@+id/parametrizedGet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/re_fetch_data_button_text" />

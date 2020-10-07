@@ -6,49 +6,56 @@ import com.tinder.StateMachine
 
 class MainViewModel : ViewModel() {
 
-    val liveData = MutableLiveData<String>()
+    val liveData = MutableLiveData<StateMachine.Transition.Valid<State, Event, SideEffect>>()
 
     private val stateMachine: StateMachine<State, Event, SideEffect> by lazy {
         StateMachine.create {
             initialState(State.Idle)
 
             state<State.Idle> {
-                on<Event.FetchData> { transitionTo(State.Loading, SideEffect.Loading) }
-            }
-
-            state<State.Loading> {
-                onEnter { fetchData() }
-                on<Event.FetchDataSucceeded> { event ->
-                    transitionTo(
-                        State.Success(event.payload),
-                        SideEffect.Success
-                    )
+                on<Event.GetString> {
+                    transitionTo(State.Working(action = ::fetchData), SideEffect.Loading)
                 }
-                on<Event.FetchDataFailed> { event ->
+                on<Event.ParametrizedGetString> {
                     transitionTo(
-                        State.Failure(event.reason),
-                        SideEffect.Failure
+                        State.ParametrizedWorking(
+                            action = ::fetchWithFilter,
+                            param = it.filterParam
+                        ), SideEffect.Loading
                     )
                 }
             }
 
-            state<State.Success<String>> {
-                onEnter { liveData.value = this.data }
-                on<Event.DataOnView> { transitionTo(State.Done, SideEffect.Done) }
-                onExit { transitionTo(State.Done, SideEffect.Done) }
+            state<State.Working> {
+                onEnter { action.invoke() }
+                on<Event.Success> { transitionTo(State.Waiting, SideEffect.Success(it.data)) }
+                on<Event.Failure> { transitionTo(State.Waiting, SideEffect.Failure(it.reason)) }
             }
-            state<State.Done> {
-                on<Event.Reload> { transitionTo(State.Loading, SideEffect.Loading) }
+
+            state<State.ParametrizedWorking> {
+                onEnter { action.invoke(param) }
+                on<Event.Success> { transitionTo(State.Waiting, SideEffect.Success(it.data)) }
+                on<Event.Failure> { transitionTo(State.Waiting, SideEffect.Failure(it.reason)) }
+            }
+
+            state<State.Waiting> {
+                on<Event.Done> { transitionTo(State.Idle, SideEffect.Done) }
+            }
+
+            onTransition {
+                val transition = it as? StateMachine.Transition.Valid ?: return@onTransition
+                liveData.value = transition
             }
         }
     }
 
-    fun handle(event: Event) {
-        stateMachine.transition(event)
-    }
+    fun handle(event: Event) = stateMachine.transition(event)
 
-    private fun fetchData() {
-        stateMachine.transition(Event.FetchDataSucceeded("Data"))
+    private fun fetchData() = stateMachine.transition(Event.Success("{}"))
+
+    private fun fetchWithFilter(param: Param) {
+        val filter = param as? FilterParam ?: return
+        stateMachine.transition(Event.Success("{${filter.sentence}}"))
     }
 
 }

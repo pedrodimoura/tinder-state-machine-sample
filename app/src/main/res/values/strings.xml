@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">State Machine Sample</string>
-    <string name="fetch_data_button_text">Fetch Data</string>
-    <string name="re_fetch_data_button_text">Re Fetch Data</string>
+    <string name="fetch_data_button_text">No Params</string>
+    <string name="re_fetch_data_button_text">With Params</string>
 </resources>

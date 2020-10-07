@@ -30,9 +30,6 @@ object Libs {
     private const val lifecycleCompiler: String =
         "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycle}"
 
-    private const val lifecycleTesting: String =
-        "androidx.arch.core:core-testing:${Versions.lifecycle}"
-
     fun classpathDependencies() = listOf(androidGradle, kotlinGradlePlugin)
 
     fun implementationDependencies() = listOf(
@@ -48,7 +45,7 @@ object Libs {
         lifecycleCompiler
     )
 
-    fun testDependencies() = listOf(jUnit, lifecycleTesting)
+    fun testDependencies() = listOf(jUnit)
 
     fun androidTestDependencies() = listOf(espressoCore, androidXExtJUnit)
 }

@@ -3,7 +3,6 @@ package com.github.pedrodimoura.statemachinesample
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.github.pedrodimoura.statemachinesample.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -22,31 +21,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
 
-        viewModel.liveData.observe(this, Observer { Log.d(SIDE_EFFECT_LOG_TAG, it) })
-        viewBinding.fetchDataButton.setOnClickListener { viewModel.handle(Event.FetchData) }
-        viewBinding.reloadDataButton.setOnClickListener { viewModel.handle(Event.Reload) }
+        viewModel.liveData.observe(this) { transition ->
+            when (val s = transition.sideEffect) {
+                is SideEffect.Loading -> Log.d(SIDE_EFFECT_LOG_TAG, "Loading")
+                is SideEffect.Success -> {
+                    Log.d(SIDE_EFFECT_LOG_TAG, "Success: ${s.data}")
+                    viewModel.handle(Event.Done)
+                }
+                is SideEffect.Failure -> {
+                    Log.d(SIDE_EFFECT_LOG_TAG, "Failure: ${s.reason}")
+                    viewModel.handle(Event.Done)
+                }
+                is SideEffect.Done -> Log.d(SIDE_EFFECT_LOG_TAG, "Done")
+            }
+        }
+
+        viewBinding.noParametrizedGet.setOnClickListener { viewModel.handle(Event.GetString) }
+
+        viewBinding.parametrizedGet.setOnClickListener {
+            val filter = FilterParam("My Sentence")
+            viewModel.handle(Event.ParametrizedGetString(filter))
+        }
     }
-}
-
-sealed class State {
-    object Idle : State()
-    object Loading : State()
-    data class Success<out T : Any>(val data: T) : State()
-    data class Failure(val reason: Throwable) : State()
-    object Done : State()
-}
-
-sealed class Event {
-    object FetchData : Event()
-    object Reload : Event()
-    object DataOnView : Event()
-    data class FetchDataSucceeded(val payload: String) : Event()
-    data class FetchDataFailed(val reason: Throwable) : Event()
-}
-
-sealed class SideEffect {
-    object Loading : SideEffect()
-    object Success : SideEffect()
-    object Failure : SideEffect()
-    object Done : SideEffect()
 }
