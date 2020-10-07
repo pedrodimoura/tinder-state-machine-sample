@@ -30,6 +30,24 @@ object Libs {
     private const val lifecycleCompiler: String =
         "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycle}"
 
+    private const val retrofit: String =
+        "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
+
+    private const val gsonConverter: String =
+        "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
+
+    private const val koinAndroid: String =
+        "org.koin:koin-android:${Versions.koin}"
+
+    private const val koinScope: String =
+        "org.koin:koin-androidx-scope:${Versions.koin}"
+
+    private const val koinViewModel: String =
+        "org.koin:koin-androidx-viewmodel:${Versions.koin}"
+
+    private const val loggingInterceptor: String =
+        "com.squareup.okhttp3:logging-interceptor:${Versions.loggingInterceptor}"
+
     fun classpathDependencies() = listOf(androidGradle, kotlinGradlePlugin)
 
     fun implementationDependencies() = listOf(
@@ -38,7 +56,13 @@ object Libs {
         appCompat,
         coreKtx,
         tinderStateMachine,
-        lifecycle
+        lifecycle,
+        retrofit,
+        gsonConverter,
+        koinAndroid,
+        koinScope,
+        koinViewModel,
+        loggingInterceptor
     )
 
     fun kaptDependencies() = listOf(
